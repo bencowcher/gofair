@@ -16,7 +16,7 @@ type MarketFilter struct {
 	TurnInPlayEnabled  bool            `json:"turnInPLayEnabled,omitempty"`
 	InPlayOnly         bool            `json:"inPlayOnly,omitempty"`
 	MarketBettingTypes []string        `json:"marketBettingTypes,omitempty"`
-	MarketTypeCOdes    []string        `json:"marketTypeCOdes,omitempty"`
+	MarketTypeCodes    []string        `json:"marketTypeCodes,omitempty"`
 	MarketStartTime    TimeRangeFilter `json:"marketStartTime,omitempty"`
 	WithOrders         string          `json:"withOrders,omitempty"`
 }
