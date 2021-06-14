@@ -11,6 +11,7 @@ import (
 
 func (h *Historical) ParseHistoricalData(directory string, listener streaming.Listener) error {
 	file, err := os.Open(directory)
+
 	if err != nil {
 		log.Fatal(err)
 	}
