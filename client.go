@@ -2,8 +2,8 @@ package gofair
 
 import (
 	"crypto/tls"
-	"time"
 	"strings"
+	"time"
 )
 
 // betfair api endpoints
@@ -44,22 +44,22 @@ type Client struct {
 
 // betting object
 type Betting struct {
-	Client *Client
+	client *Client
 }
 
 // account object
 type Account struct {
-	Client *Client
+	client *Client
 }
 
 // streaming object
 type Streaming struct {
-	Client *Client
+	client *Client
 }
 
 // historical object
 type Historical struct {
-	Client *Client
+	client *Client
 }
 
 // creates new client
@@ -90,19 +90,19 @@ func NewClient(config *Config) (*Client, error) {
 
 	// create betting
 	c.Betting = new(Betting)
-	c.Betting.Client = c
+	c.Betting.client = c
 
 	// create account
 	c.Account = new(Account)
-	c.Account.Client = c
+	c.Account.client = c
 
 	// create streaming
 	c.Streaming = new(Streaming)
-	c.Streaming.Client = c
+	c.Streaming.client = c
 
 	// create historical
 	c.Historical = new(Historical)
-	c.Historical.Client = c
+	c.Historical.client = c
 
 	return c, nil
 }

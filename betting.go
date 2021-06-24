@@ -1,39 +1,41 @@
 package gofair
 
-import "time"
+import (
+	"time"
+)
 
-type eventType struct {
+type EventType struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
-type eventTypeResult struct {
+type EventTypeResult struct {
 	MarketCount int       `json:"marketCount"`
-	EventType   eventType `json:"eventType"`
+	EventType   EventType `json:"eventType"`
 }
 
-type competition struct {
+type Competition struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
-type competitionResult struct {
+type CompetitionResult struct {
 	MarketCount       int         `json:"marketCount"`
 	CompetitionRegion string      `json:"competitionRegion"`
-	Competition       competition `json:"competition"`
+	Competition       Competition `json:"competition"`
 }
 
-type timeRange struct {
+type TimeRange struct {
 	From time.Time `json:"from"`
 	To   time.Time `json:"to"`
 }
 
-type timeRangeResult struct {
+type TimeRangeResult struct {
 	MarketCount int       `json:"marketCount"`
-	TimeRange   timeRange `json:"timeRange"`
+	TimeRange   TimeRange `json:"timeRange"`
 }
 
-type event struct {
+type Event struct {
 	Id          string `json:"id"`
 	OpenDate    string `json:"openDate"`
 	TimeZone    string `json:"timezone"`
@@ -42,27 +44,27 @@ type event struct {
 	Venue       string `json:"venue"`
 }
 
-type eventResult struct {
+type EventResult struct {
 	MarketCount int   `json:"marketCount"`
-	Event       event `json:"event"`
+	Event       Event `json:"event"`
 }
 
-type marketTypeResult struct {
+type MarketTypeResult struct {
 	MarketCount int    `json:"marketCount"`
 	MarketType  string `json:"marketType"`
 }
 
-type countryResult struct {
+type CountryResult struct {
 	MarketCount int    `json:"marketCount"`
 	CountryCode string `json:"countryCode"`
 }
 
-type venueResult struct {
+type VenueResult struct {
 	MarketCount int    `json:"marketCount"`
 	Venue       string `json:"venue"`
 }
 
-type marketCatalogueDescription struct {
+type MarketCatalogueDescription struct {
 	BettingType        string    `json:"bettingType"`
 	BSPMarket          bool      `json:"bspMarket"`
 	DiscountAllowed    bool      `json:"discountAllowed"`
@@ -80,11 +82,11 @@ type marketCatalogueDescription struct {
 	Clarifications     string    `json:"clarifications"`
 }
 
-type metadata struct {
+type Metadata struct {
 	RunnerId int `json:"runnerId"`
 }
 
-type runnerCatalogue struct {
+type RunnerCatalogue struct {
 	SelectionId  int     `json:"selectionId"`
 	RunnerName   string  `json:"runnerName"`
 	SortPriority int     `json:"sortPriority"`
@@ -92,19 +94,98 @@ type runnerCatalogue struct {
 	//Metadata		*metadata	`json:"metadata"`  //todo
 }
 
-type marketCatalogue struct {
+type PriceSize struct {
+	Price float64 `json:"price"`
+	Size  float64 `json:"size"`
+}
+
+type MarketBook struct {
+	MarketID              string  `json:"marketId"`
+	IsMarketDataDelayed   bool    `json:"isMarketDataDelayed"`
+	Status                string  `json:"status"`
+	BetDelay              int     `json:"betDelay"`
+	BspReconciled         bool    `json:"bspReconciled"`
+	Complete              bool    `json:"complete"`
+	Inplay                bool    `json:"inplay"`
+	NumberOfWinners       int     `json:"numberOfWinners"`
+	NumberOfRunners       int     `json:"numberOfRunners"`
+	NumberOfActiveRunners int     `json:"numberOfActiveRunners"`
+	TotalMatched          float64 `json:"totalMatched"`
+	TotalAvailable        float64 `json:"totalAvailable"`
+	CrossMatching         bool    `json:"crossMatching"`
+	RunnersVoidable       bool    `json:"runnersVoidable"`
+	Version               int64   `json:"version"`
+	Runners               []struct {
+		SelectionID  int64   `json:"selectionId"`
+		Handicap     float64 `json:"handicap"`
+		Status       string  `json:"status"`
+		TotalMatched float64 `json:"totalMatched"`
+		Ex           struct {
+			AvailableToBack []PriceSize `json:"availableToBack"`
+			AvailableToLay  []PriceSize `json:"availableToLay"`
+			TradedVolume    []PriceSize `json:"tradedVolume"`
+		} `json:"ex"`
+		Orders  []Order `json:"orders"`
+		Matches []Match `json:"matches"`
+	} `json:"runners"`
+}
+
+type Order struct {
+	BetID           string    `json:"betId"`
+	OrderType       string    `json:"orderType"`
+	OrderStatus     string    `json:"orderStatus"`
+	PersistenceType string    `json:"persistenceType"`
+	Side            string    `json:"side"`
+	Size            Decimal   `json:"size"`
+	Price           Decimal   `json:"price"`
+	BSPLiability    Decimal   `json:"bspLiability"`
+	PlacedDate      time.Time `json:"placedDate"`
+
+	AvgPriceMatched Decimal `json:"avgPriceMatched"`
+	SizeMatched     Decimal `json:"sizeMatched"`
+	SizeRemaining   Decimal `json:"sizeRemaining"`
+	SizeLapsed      Decimal `json:"sizeLapsed"`
+	SizeCancelled   Decimal `json:"sizeCancelled"`
+	SizeVoided      Decimal `json:"sizeVoided"`
+
+	CustomerOrderRef    string `json:"customerOrderRef"`
+	CustomerStrategyRef string `json:"customerStrategyRef"`
+}
+type Match struct {
+	BetID       string    `json:"betId"`
+	MatchID     string    `json:"matchId"`
+	Side        string    `json:"side"`
+	Size        Decimal   `json:"size"`
+	Price       Decimal   `json:"price"`
+	MatchedDate time.Time `json:"matchDate"`
+}
+
+type MarketCatalogue struct {
 	MarketId                   string                     `json:"marketId"`
 	MarketName                 string                     `json:"marketName"`
 	TotalMatched               float32                    `json:"totalMatched"`
 	MarketStartTime            time.Time                  `json:"marketStartTime"`
-	Competition                competition                `json:"competition"`
-	Event                      event                      `json:"event"`
-	EventType                  eventType                  `json:"eventType"`
-	MarketCatalogueDescription marketCatalogueDescription `json:"description"`
-	Runners                    []runnerCatalogue          `json:"runners"`
+	Competition                Competition                `json:"competition"`
+	Event                      Event                      `json:"event"`
+	EventType                  EventType                  `json:"eventType"`
+	MarketCatalogueDescription MarketCatalogueDescription `json:"description"`
+	Runners                    []RunnerCatalogue          `json:"runners"`
 }
 
-func (b *Betting) ListEventTypes(filter MarketFilter) ([]eventTypeResult, error) {
+// PlaceOrders to place new orders into market.
+func (b *Betting) PlaceOrders(req PlaceOrderRequest) (*PlaceExecutionReport, error) {
+	url := createUrl(api_betting_url, "placeOrders/")
+	res := PlaceExecutionReport{}
+
+	err := b.client.Request(url, &req, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (b *Betting) ListEventTypes(filter MarketFilter) ([]EventTypeResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listEventTypes/")
 
@@ -112,17 +193,17 @@ func (b *Betting) ListEventTypes(filter MarketFilter) ([]eventTypeResult, error)
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []eventTypeResult
+	var response []EventTypeResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListCompetitions(filter MarketFilter) ([]competitionResult, error) {
+func (b *Betting) ListCompetitions(filter MarketFilter) ([]CompetitionResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listCompetitions/")
 
@@ -130,17 +211,17 @@ func (b *Betting) ListCompetitions(filter MarketFilter) ([]competitionResult, er
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []competitionResult
+	var response []CompetitionResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListTimeRanges(filter MarketFilter, granularity string) ([]timeRangeResult, error) {
+func (b *Betting) ListTimeRanges(filter MarketFilter, granularity string) ([]TimeRangeResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listTimeRanges/")
 
@@ -149,17 +230,17 @@ func (b *Betting) ListTimeRanges(filter MarketFilter, granularity string) ([]tim
 	params.MarketFilter = filter
 	params.Granularity = granularity
 
-	var response []timeRangeResult
+	var response []TimeRangeResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListEvents(filter MarketFilter) ([]eventResult, error) {
+func (b *Betting) ListEvents(filter MarketFilter) ([]EventResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listEvents/")
 
@@ -167,17 +248,17 @@ func (b *Betting) ListEvents(filter MarketFilter) ([]eventResult, error) {
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []eventResult
+	var response []EventResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListMarketTypes(filter MarketFilter) ([]marketTypeResult, error) {
+func (b *Betting) ListMarketTypes(filter MarketFilter) ([]MarketTypeResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listMarketTypes/")
 
@@ -185,17 +266,17 @@ func (b *Betting) ListMarketTypes(filter MarketFilter) ([]marketTypeResult, erro
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []marketTypeResult
+	var response []MarketTypeResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListCountries(filter MarketFilter) ([]countryResult, error) {
+func (b *Betting) ListCountries(filter MarketFilter) ([]CountryResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listCountries/")
 
@@ -203,17 +284,17 @@ func (b *Betting) ListCountries(filter MarketFilter) ([]countryResult, error) {
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []countryResult
+	var response []CountryResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListVenues(filter MarketFilter) ([]venueResult, error) {
+func (b *Betting) ListVenues(filter MarketFilter) ([]VenueResult, error) {
 	// create url
 	url := createUrl(api_betting_url, "listVenues/")
 
@@ -221,18 +302,17 @@ func (b *Betting) ListVenues(filter MarketFilter) ([]venueResult, error) {
 	params := new(Params)
 	params.MarketFilter = filter
 
-	var response []venueResult
+	var response []VenueResult
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
 }
 
-func (b *Betting) ListMarketCatalogue(filter MarketFilter, marketProjection []string, sort string, maxResults int) (
-	[]marketCatalogue, error) {
+func (b *Betting) ListMarketCatalogue(filter MarketFilter, marketProjection []string, sort string, maxResults int) ([]MarketCatalogue, error) {
 	// create url
 	url := createUrl(api_betting_url, "listMarketCatalogue/")
 
@@ -243,12 +323,27 @@ func (b *Betting) ListMarketCatalogue(filter MarketFilter, marketProjection []st
 	params.Sort = sort
 	params.MaxResults = maxResults
 
-	var response []marketCatalogue
+	var response []MarketCatalogue
 
 	// make request
-	err := b.Request(url, params, &response)
+	err := b.client.Request(url, params, &response)
 	if err != nil {
 		return nil, err
 	}
 	return response, err
+}
+
+func (b *Betting) ListMarketBook(req ListMarketBookRequest) ([]MarketBook, error) {
+	url := createUrl(api_betting_url, "listMarketBook/")
+
+	markets := []MarketBook{}
+
+	err := b.client.Request(url, &req, &markets)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return markets, nil
+
 }

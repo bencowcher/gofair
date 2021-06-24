@@ -3,6 +3,7 @@ package gofair
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -27,18 +28,60 @@ func logError(data []byte) error {
 	if err := json.Unmarshal(data, &errorResp); err != nil {
 		return err
 	}
-	log.Println("Error:", errorResp, errorResp.Detail)
+	log.Println("Error:", string(data))
 	return nil
 }
 
-func (b *Betting) Request(url string, params *Params, v interface{}) error {
+func (c *Client) RequestJson(url string, params interface{}) ([]byte, error) {
+	var body io.Reader
+	if params != nil {
+		bytes, err := json.Marshal(params)
+		if err != nil {
+			return nil, err
+		}
+		body = strings.NewReader(string(bytes))
+	}
+
+	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	// set headers
+	req.Header.Set("X-Application", c.config.AppKey)
+	req.Header.Set("X-Authentication", c.session.SessionToken)
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Connection", "keep-alive")
+
+	client := http.DefaultClient
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (c *Client) Request(url string, params interface{}, v interface{}) error {
 	//params.Locale = b.Client.config.Locale
 
-	bytes, err := json.Marshal(params)
-	if err != nil {
-		return err
+	var body io.Reader
+	if params != nil {
+		bytes, err := json.Marshal(params)
+		if err != nil {
+			return err
+		}
+		body = strings.NewReader(string(bytes))
 	}
-	body := strings.NewReader(string(bytes))
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
@@ -46,13 +89,13 @@ func (b *Betting) Request(url string, params *Params, v interface{}) error {
 	}
 
 	// set headers
-	req.Header.Set("X-Application", b.Client.config.AppKey)
-	req.Header.Set("X-Authentication", b.Client.session.SessionToken)
+	req.Header.Set("X-Application", c.config.AppKey)
+	req.Header.Set("X-Authentication", c.session.SessionToken)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Connection", "keep-alive")
 
-	client := &http.Client{}
+	client := http.DefaultClient
 
 	resp, err := client.Do(req)
 
