@@ -125,6 +125,13 @@ type MarketBook struct {
 			AvailableToLay  []PriceSize `json:"availableToLay"`
 			TradedVolume    []PriceSize `json:"tradedVolume"`
 		} `json:"ex"`
+		SP struct {
+			NearPrice         float64     `json:"nearPrice"`
+			FarPrice          float64     `json:"farPrice"`
+			ActualSP          interface{} `json:"actualSP"`
+			BackStakeTaken    []PriceSize `json:"backStakeTaken"`
+			LayLiabilityTaken []PriceSize `json:"layLiabilityTaken"`
+		} `json:"sp"`
 		Orders  []Order `json:"orders"`
 		Matches []Match `json:"matches"`
 	} `json:"runners"`
